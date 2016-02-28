@@ -41,7 +41,7 @@ void reply_send_http(int sockfd, int code, const string& msg){
 		int length = f.tellg();
 		f.seekg (0, f.beg);			
 		
-		send_reply_str(sockfd, "HTTP/1.0. 200 OK\r\n");		
+		send_reply_str(sockfd, "HTTP/1.0 200 OK\r\n");		
 		//send_reply_str(sockfd, "Date: Fri, 20 Mar 1999 08:17:58 GMT\r\n");		
 		send_reply_str(sockfd, "Server: Trololo/100500\r\n");		
 		//send_reply_str(sockfd, "Last-modified: Mon, 17 Jun 1996 21:53:08 GMT\r\n");		
@@ -66,7 +66,7 @@ void reply_send_http(int sockfd, int code, const string& msg){
 	}
 	else
 	if (code == 404){
-		send_reply_str(sockfd, "HTTP/1.0. 404 Not found\r\n");	
+		send_reply_str(sockfd, "HTTP/1.0 404 Not Found\r\n");	
 		send_reply_str(sockfd, "\r\n");		
 		send_reply_str(sockfd, "<h1>Page not found!<h1>\r\n<i>404 desu yo!</i>");		
 	}
