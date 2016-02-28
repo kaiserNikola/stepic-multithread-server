@@ -106,7 +106,7 @@ void serve(int sockfd, const string &home){
 	
 	sp_1 = url.find("?");
 	if (sp_1 != std::string::npos){
-			url = url.substr(0, sp_1-1);
+			url = url.substr(0, sp_1);
 	}
 	
 	if (url == "/") url = "/index.html";
