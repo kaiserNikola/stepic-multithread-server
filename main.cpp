@@ -12,9 +12,17 @@
        
 using namespace std;
 
+void log(const string& s, bool br=true){
+		ofstream f("access.log", ofstream::out | ofstream::app);
+		f << s;
+		if (br) f << endl;
+		f.close();
+}
 
 void send_reply_str(int sockfd, const char* msg, int sz=0){	
 	int sent=0, total=sz ? sz : strlen(msg);
+	
+	log(msg, false);
 	
 	while (sent < total){
 		int n = send(sockfd,msg+sent,total-sent, 0);
@@ -22,6 +30,9 @@ void send_reply_str(int sockfd, const char* msg, int sz=0){
 		sent += n;		
 	} 
 }
+
+
+
 
 void reply_send_http(int sockfd, int code, const string& msg){
 	if (code == 200){
@@ -82,6 +93,7 @@ string read_http_request(int sockfd){
 void serve(int sockfd, const string &home){
 	string request = read_http_request(sockfd);
 	//cout << request << endl;
+	log(request);
 	
 	// find url from: GET /index.html HTTP/1.0
 	int splitter = request.find("\r\n");
@@ -94,6 +106,7 @@ void serve(int sockfd, const string &home){
 	//cout << "[" << url << "]"<<endl;
 	
 	url = home + url;
+	log("\n>>> "+url);
 	
 	if (access( url.c_str(), 0 ) == 0){
 		//cout << "file exists" <<endl;		
