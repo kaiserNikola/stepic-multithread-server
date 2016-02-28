@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <thread>
        
 using namespace std;
 
@@ -30,9 +31,9 @@ void reply_send_http(int sockfd, int code, const string& msg){
 		f.seekg (0, f.beg);			
 		
 		send_reply_str(sockfd, "HTTP/1.0. 200 OK\r\n");		
-		send_reply_str(sockfd, "Date: Fri, 20 Mar 1999 08:17:58 GMT\r\n");		
+		//send_reply_str(sockfd, "Date: Fri, 20 Mar 1999 08:17:58 GMT\r\n");		
 		send_reply_str(sockfd, "Server: Trololo/100500\r\n");		
-		send_reply_str(sockfd, "Last-modified: Mon, 17 Jun 1996 21:53:08 GMT\r\n");		
+		//send_reply_str(sockfd, "Last-modified: Mon, 17 Jun 1996 21:53:08 GMT\r\n");		
 		send_reply_str(sockfd, "Content-type: text/html\r\n");	
 		char tmp[64];	
 		sprintf(tmp, "Content-lenght: %d\r\n", length);
@@ -80,7 +81,7 @@ string read_http_request(int sockfd){
 
 void serve(int sockfd, const string &home){
 	string request = read_http_request(sockfd);
-	cout << request << endl;
+	//cout << request << endl;
 	
 	// find url from: GET /index.html HTTP/1.0
 	int splitter = request.find("\r\n");
@@ -90,16 +91,16 @@ void serve(int sockfd, const string &home){
 	int sp_2 = query.find(" ", sp_1+1);
 	string url = query.substr(sp_1+1, sp_2-sp_1-1);
 	if (url == "/") url = "/index.html";
-	cout << "[" << url << "]"<<endl;
+	//cout << "[" << url << "]"<<endl;
 	
 	url = home + url;
 	
 	if (access( url.c_str(), 0 ) == 0){
-		cout << "file exists" <<endl;		
+		//cout << "file exists" <<endl;		
 		reply_send_http(sockfd, 200, url);
 	}
 	else{
-		cout << "file ["<< url << "] not found" <<endl;	
+		//cout << "file ["<< url << "] not found" <<endl;	
 		reply_send_http(sockfd, 404, "");	
 	}
 	shutdown(sockfd, SHUT_RDWR);
@@ -108,7 +109,7 @@ void serve(int sockfd, const string &home){
 
 
 int main(int argc, char ** argv){
-	cout << "Hello, desu" << endl;
+	//cout << "Hello, desu" << endl;
 	// -h <ip> -p <port> -d <directory>
 
 	int port = 8080;	
@@ -127,7 +128,7 @@ int main(int argc, char ** argv){
 	   case 'd':
 		   strcpy(directory, optarg);
 		   break;
-	   default: /* '?' */
+	   default: // '?' 
 		   fprintf(stderr, "Usage: %s [-t nsecs] [-n] name\n", argv[0]);
 		   exit(-1);
 	   }
@@ -136,7 +137,7 @@ int main(int argc, char ** argv){
 	if (directory[directory_sz-1] == '/')
 		directory[directory_sz-1] = 0;
 
-	cout << "host=" << host <<"; port="<<port<<"; directory="<<directory<< endl;
+	//cout << "host=" << host <<"; port="<<port<<"; directory="<<directory<< endl;
 	
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
@@ -165,11 +166,11 @@ int main(int argc, char ** argv){
 		int newsockfd = accept(sockfd, (sockaddr *) &cli_addr, (socklen_t *)&clilen);
 		if (newsockfd < 0)
 		  perror("ERROR on accept");	
-		printf("\n[Client: %s:%d]\n\n", inet_ntoa(cli_addr.sin_addr), cli_addr.sin_port);  
-		serve(newsockfd, string(directory));		
-		break;	  
+		//printf("\n[Client: %s:%d]\n\n", inet_ntoa(cli_addr.sin_addr), cli_addr.sin_port);  
+		std::thread thr(serve, newsockfd, string(directory));
+		thr.detach();
 	}
-	cout << "Goodbye, desu" << endl;
+	//cout << "Goodbye, desu" << endl;
 	shutdown(sockfd, SHUT_RDWR);
 	close(sockfd);
 	return 0;
