@@ -66,7 +66,8 @@ void reply_send_http(int sockfd, int code, const string& msg){
 	}
 	else
 	if (code == 404){
-		send_reply_str(sockfd, "HTTP/1.0 404 Not Found\r\n");	
+		send_reply_str(sockfd, "HTTP/1.0 404 NOT FOUND\r\n");	
+		send_reply_str(sockfd, "Content-Type: text/html\r\n");	
 		send_reply_str(sockfd, "\r\n");		 
 		send_reply_str(sockfd, "<h1>Page not found!<h1>\r\n<i>404 desu yo!</i>");		
 	}
