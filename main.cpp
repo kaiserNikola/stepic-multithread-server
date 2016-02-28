@@ -13,7 +13,7 @@
 using namespace std;
 
 void log(const string& s, bool br=true){
-		ofstream f("/home/box/access.log", ofstream::out | ofstream::app);
+		ofstream f("/tmp/stepic-task-srv.log", ofstream::out | ofstream::app);
 		f << s;
 		if (br) f << endl;
 		f.close();
@@ -70,6 +70,7 @@ void reply_send_http(int sockfd, int code, const string& msg){
 		send_reply_str(sockfd, "\r\n");		
 		send_reply_str(sockfd, "<h1>Page not found!<h1>\r\n<i>404 desu yo!</i>");		
 	}
+	log("---\n");
 }
 
 string read_http_request(int sockfd){
@@ -102,6 +103,12 @@ void serve(int sockfd, const string &home){
 	int sp_1 = query.find(" ");
 	int sp_2 = query.find(" ", sp_1+1);
 	string url = query.substr(sp_1+1, sp_2-sp_1-1);
+	
+	sp_1 = url.find("?");
+	if (sp_1 != std::string::npos){
+			url = url.substr(0, sp_1-1);
+	}
+	
 	if (url == "/") url = "/index.html";
 	//cout << "[" << url << "]"<<endl;
 	

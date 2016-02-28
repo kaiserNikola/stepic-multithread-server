@@ -1,5 +1,11 @@
 build/*
 
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+final
+CMakeFiles/*
+
 # Compiled Object files
 *.slo
 *.lo
