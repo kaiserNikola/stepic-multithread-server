@@ -137,6 +137,18 @@ int main(int argc, char ** argv){
 	if (directory[directory_sz-1] == '/')
 		directory[directory_sz-1] = 0;
 
+	pid_t parpid;
+    if((parpid=fork())<0) {                
+             printf("\ncan't fork"); //--если нам по какойлибо причине это сделать не удается выходим с ошибкой.
+             exit(1);                //--здесь, кто не совсем понял нужно обратится к man fork
+    }
+    else if (parpid!=0){
+		exit(0);
+	} 
+                   
+    setsid();           //--перевод нашего дочернего процесса в новую сесию	
+
+
 	//cout << "host=" << host <<"; port="<<port<<"; directory="<<directory<< endl;
 	
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
