@@ -13,7 +13,7 @@
 using namespace std;
 
 void log(const string& s, bool br=true){
-		ofstream f("access.log", ofstream::out | ofstream::app);
+		ofstream f("/home/box/access.log", ofstream::out | ofstream::app);
 		f << s;
 		if (br) f << endl;
 		f.close();
